@@ -1,14 +1,17 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 """
 Each row in a .csv file exported from OpenSky corresponds to a
 single product in an order.  This script merges those rows into a
 single order.
 
-QIF format: http://en.wikipedia.org/wiki/QIF
+The output .csv file has been successfully imported into
+gnucash-2.6.1.  It has not been tested with Quicken.
 
+QIF format: http://en.wikipedia.org/wiki/QIF
 """
 
+from __future__ import print_function
 import argparse
 import csv
 import os
