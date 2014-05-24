@@ -213,43 +213,51 @@ def main():
     )
     arg_parser.add_argument(
         "--acct-cc_processing",
+        metavar="NAME",
         default="Expenses:CC Processing Fees",
-        help="credit card processing fees expense account"
+        help="credit card processing fees expense account (default=%(default)s)"
     )
     arg_parser.add_argument(
         "--acct-credits",
+        metavar="NAME",
         default="Expenses:OpenSky Credits",
-        help="OpenSky credits expense account"
+        help="OpenSky credits expense account (default=%(default)s)"
     )
     arg_parser.add_argument(
         "--acct-commission",
+        metavar="NAME",
         default="Expenses:OpenSky Commissions",
-        help="OpenSky commissions expense account"
+        help="OpenSky commissions expense account (default=%(default)s)"
     )
     arg_parser.add_argument(
         "--acct-opensky",
+        metavar="NAME",
         default="Assets:OpenSky",
-        help="OpenSky asset account"
+        help="OpenSky asset account (default=%(default)s)"
     )
     arg_parser.add_argument(
         "--acct-shipping",
+        metavar="NAME",
         default="Expenses:Postage and Delivery",
-        help="shipping expense account"
+        help="shipping expense account (default=%(default)s)"
     )
     arg_parser.add_argument(
         "--acct-restocking",
-        default="Expenses:Restocking",
-        help="restocking fees expense account"
+        metavar="NAME",
+        default="Expenses:Restocking Fees",
+        help="restocking fees expense account (default=%(default)s)"
     )
     arg_parser.add_argument(
         "--acct-sales",
+        metavar="NAME",
         default="Income:Sales - OpenSky",
-        help="sales income account"
+        help="sales income account (default=%(default)s)"
     )
     arg_parser.add_argument(
         "--acct-sales-tax",
-        default="Liabilities:Sales Tax",
-        help="sales tax liability account"
+        metavar="NAME",
+        default="Expenses:Sales Tax",
+        help="sales tax expense account (default=%(default)s)"
     )
     arg_parser.add_argument(
         "--verbose",
