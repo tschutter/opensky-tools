@@ -80,7 +80,7 @@ class Order:
             ),
             2
         )
-        if self.item_price != item_price:
+        if round(self.item_price, 2) != item_price:
             ui.warning(
                 (
                     "For Order ID = {},"
