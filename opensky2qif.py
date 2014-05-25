@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-Each row in a .csv file exported from OpenSky corresponds to a
+Each row in a payments CSV file exported from OpenSky corresponds to a
 single product in an order.  This script merges those rows into a
 single order.
 
@@ -112,18 +112,29 @@ def read_opensky(ui):
         with open(ui.args.csvfile) as opensky_file:
             opensky_reader = csv.DictReader(opensky_file)
             for rownum, fields in enumerate(opensky_reader):
-                order_id = fields["Order ID"]
-                sku = fields["SKU"]
-                item_price = get_float(fields, "Item price")
-                shipping = get_float(fields, "Shipping price")
-                # Sign of credits is wrong in exported .csv file.
-                opensky_credits = -get_float(fields, "Credits")
-                sales_tax = get_float(fields, "Sales tax")
-                restocking_fee = get_float(fields, "Restocking fee")
-                cc_processing = get_float(fields, "Credit card processing")
-                opensky_commission = get_float(fields, "OpenSky commission")
-                total_payment = get_float(fields, "Total payment")
-                date = fields["Original order date"]
+                try:
+                    order_id = fields["Order ID"]
+                    sku = fields["SKU"]
+                    item_price = get_float(fields, "Item price")
+                    shipping = get_float(fields, "Shipping price")
+                    # Sign of credits is inverted in exported .csv file.
+                    opensky_credits = -get_float(fields, "Credits")
+                    sales_tax = get_float(fields, "Sales tax")
+                    restocking_fee = get_float(fields, "Restocking fee")
+                    cc_processing = get_float(fields, "Credit card processing")
+                    opensky_commission = get_float(
+                        fields,
+                        "OpenSky commission"
+                    )
+                    total_payment = get_float(fields, "Total payment")
+                    date = fields["Original order date"]
+                except KeyError as kex:
+                    ui.fatal(
+                        (
+                            "Unable to find {} column in {}."
+                            " Is this an OpenSky payments file?"
+                        ).format(kex, ui.args.csvfile)
+                    )
                 if order_id in orders:
                     orders[order_id].update(
                         sku,
