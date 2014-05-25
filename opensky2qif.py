@@ -20,6 +20,7 @@ import Tkinter
 import tkFileDialog
 import tkMessageBox
 
+
 class Order:
     def __init__(
         self,
@@ -92,6 +93,7 @@ class Order:
             )
             self.item_price = item_price
 
+
 def get_float(fields, key):
     """Convert a string value to a float, handling blank values."""
     value = fields[key]
@@ -100,6 +102,7 @@ def get_float(fields, key):
     except ValueError:
         value = 0.0
     return value
+
 
 def read_opensky(ui):
     """Read a .csv file exported from OpenSky."""
@@ -151,10 +154,12 @@ def read_opensky(ui):
 
     return orders
 
+
 def validate_orders(ui, orders):
     """Check that the numbers add up for each order."""
     for order_id in orders:
         orders[order_id].validate(ui, order_id)
+
 
 def write_split(qif_file, amount, account, memo=None):
     """Write a single split to a .qif file."""
@@ -163,6 +168,7 @@ def write_split(qif_file, amount, account, memo=None):
         if memo:
             print("E{}".format(memo), file=qif_file)
         print("${:.2f}".format(amount), file=qif_file)
+
 
 def write_qif(ui, orders):
     """Write a .qif file."""
@@ -220,6 +226,7 @@ def write_qif(ui, orders):
     except IOError:
         ui.fatal("Unable to open {} for writing".format(ui.args.qiffile))
 
+
 class AppUI(object):
     def __init__(self, args):
         self.args = args
@@ -235,6 +242,7 @@ class AppUI(object):
 
         # Write a .qif file.
         write_qif(self, orders)
+
 
 class AppGUI(AppUI):
     def __init__(self, args, root):
@@ -307,7 +315,7 @@ class AppGUI(AppUI):
         self.args.csvfile = csvfile
         self.csv_entry.delete(0, Tkinter.END)
         self.csv_entry.insert(0, csvfile)
-        (root, ext) = os.path.splitext(csvfile)
+        root, ext = os.path.splitext(csvfile)
         self.set_qiffile(root + ".qif")
 
     def select_csvfile(self):
@@ -315,7 +323,7 @@ class AppGUI(AppUI):
         csvfile = tkFileDialog.askopenfilename(
             title="Choose .csv file",
             defaultextension=".csv",
-            filetypes = [("Comma Separated Value", "*.csv")],
+            filetypes=[("Comma Separated Value", "*.csv")],
             initialfile=self.args.csvfile,
             multiple=False
         )
@@ -356,6 +364,7 @@ class AppGUI(AppUI):
             self.convert()
             self.frame.quit()
 
+
 class AppCLI(AppUI):
     def __init__(self, args):
         AppUI.__init__(self, args)
@@ -369,6 +378,7 @@ class AppCLI(AppUI):
 
     def warning(self, msg):
         print("WARNING: {}".format(msg), file=sys.stderr)
+
 
 def main():
     """main"""
@@ -386,7 +396,10 @@ def main():
         "--acct-cc_processing",
         metavar="NAME",
         default="Expenses:CC Processing Fees",
-        help="credit card processing fees expense account (default=%(default)s)"
+        help=(
+            "credit card processing fees expense account"
+            " (default=%(default)s)"
+        )
     )
     arg_parser.add_argument(
         "--acct-credits",
@@ -465,6 +478,7 @@ def main():
         cli_ui.convert()
 
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())
