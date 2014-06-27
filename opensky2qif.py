@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 
-"""Each row in a payments CSV file exported from OpenSky corresponds to a
-single product in an order.  This script merges those rows into a
-single order.
+"""Converts a payment-details CSV (Comma Separated Value) file
+exported from the OpenSky Dashboard -> Accounts -> Payments to a QIF
+(Quicken Interchange Format) file.
 
-The output .csv file has been successfully imported into
-gnucash-2.6.1.  It has not been tested with Quicken.
+Each row in the CSV file corresponds to a line item in an order.
+Lines with the same "Order ID" are combined into a single order.
+Lines with the same "Payment date" are combined into a single payment.
 
 QIF format: http://en.wikipedia.org/wiki/QIF
 """
-
 
 from __future__ import print_function
 import argparse
@@ -19,11 +19,6 @@ import sys
 import Tkinter
 import tkFileDialog
 import tkMessageBox
-
-# Each line in an OpenSky "payment details" file corresponds to a line
-# item in a user order.  Lines with the same "Order ID" can be
-# combined into a single order.  Lines with the same "Payment date"
-# can be combined into a single payment to the vendor from OpenSky.
 
 
 class Order(object):
