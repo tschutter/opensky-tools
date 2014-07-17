@@ -206,6 +206,11 @@ def read_opensky(app_ui):
             "Unable to open {} for reading".format(app_ui.args.csvfile)
         )
 
+    if len(orders) == 0:
+        app_ui.fatal(
+            "No data found in {}".format(app_ui.args.csvfile)
+        )
+
     return (orders, payments)
 
 
@@ -352,6 +357,10 @@ class AppUI(object):
 
 class AppGUI(AppUI):
     """Application graphical user interface."""
+
+    # Width of filename text entry boxes.
+    FILENAME_WIDTH = 95
+
     # pylint: disable=no-self-use
     def __init__(self, args, root):
         AppUI.__init__(self, args)
@@ -367,7 +376,7 @@ class AppGUI(AppUI):
             pady=5
         )
         csv_group.pack(padx=10, pady=10)
-        self.csv_entry = Tkinter.Entry(csv_group, width=60)
+        self.csv_entry = Tkinter.Entry(csv_group, width=AppGUI.FILENAME_WIDTH)
         self.csv_entry.pack(side=Tkinter.LEFT)
         if args.csvfile:
             self.csv_entry.insert(0, args.csvfile)
@@ -386,7 +395,7 @@ class AppGUI(AppUI):
             pady=5
         )
         qif_group.pack(padx=10, pady=10)
-        self.qif_entry = Tkinter.Entry(qif_group, width=60)
+        self.qif_entry = Tkinter.Entry(qif_group, width=AppGUI.FILENAME_WIDTH)
         self.qif_entry.pack(side=Tkinter.LEFT)
         if args.qiffile:
             self.qif_entry.insert(0, args.qiffile)
