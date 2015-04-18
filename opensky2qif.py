@@ -552,7 +552,7 @@ def main():
     arg_parser.add_argument(
         "--acct-opensky",
         metavar="NAME",
-        default="Assets:OpenSky",
+        default="Assets:Accounts Receivable:OpenSky A/R",
         help="OpenSky asset account (default=%(default)s)"
     )
     arg_parser.add_argument(
