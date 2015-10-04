@@ -125,6 +125,25 @@ def get_float(fields, key):
     return value
 
 
+def normalize_date(date):
+    """
+    Return date in YYYY-MM-DD form.
+
+    This prevents GnuCash from asking you to "set a date format for
+    this QIF file" if the dates in the file are ambiguous.
+
+    Prior to 2015-07-25 the payment date was YYYY-MM-DD and the order
+    date was MM/DD/YYYY.  Therefore we can make no assumptions about
+    the format of dates in the .csv file.
+    """
+
+    if "/" in date:
+        # Assume MM/DD/YYYY.
+        date = "{0[2]}-{0[0]}-{0[1]}".format(date.split("/"))
+
+    return date
+
+
 def read_opensky(app_ui):
     """Read a .csv file exported from OpenSky."""
 
@@ -150,8 +169,8 @@ def read_opensky(app_ui):
                         "OpenSky commission"
                     )
                     total_payment = get_float(fields, "Total payment")
-                    order_date = fields["Original order date"]
-                    payment_date = fields["Payment date"]
+                    order_date = normalize_date(fields["Original order date"])
+                    payment_date = normalize_date(fields["Payment date"])
                 except KeyError as kex:
                     app_ui.fatal(
                         (
@@ -159,14 +178,6 @@ def read_opensky(app_ui):
                             " Is this an OpenSky payments file?"
                         ).format(kex, app_ui.args.csvfile)
                     )
-
-                # Convert order date from MM/DD/YYYY to YYYY-MM-DD.
-                # This prevents GnuCash from asking you to "set a date
-                # format for this QIF file" if the dates in the file
-                # are ambiguous.
-                order_date = "{0[2]}-{0[0]}-{0[1]}".format(
-                    order_date.split("/")
-                )
 
                 # Update orders.
                 if order_id in orders:
@@ -415,10 +426,10 @@ class AppGUI(AppUI):
         )
         self.convert_button.pack(side=Tkinter.LEFT, padx=5, pady=5)
 
-        # Cancel button
+        # Quit button
         self.cancel_button = Tkinter.Button(
             self.frame,
-            text="Cancel",
+            text="Quit",
             command=self.frame.quit
         )
         self.cancel_button.pack(side=Tkinter.LEFT, padx=5, pady=5)
@@ -428,8 +439,12 @@ class AppGUI(AppUI):
         self.args.csvfile = csvfile
         self.csv_entry.delete(0, Tkinter.END)
         self.csv_entry.insert(0, csvfile)
-        root = os.path.splitext(csvfile)[0]
-        self.set_qiffile(root + ".qif")
+        if len(csvfile) > 0:
+            root = os.path.splitext(csvfile)[0]
+            qiffile = root + ".qif"
+        else:
+            qiffile = ""
+        self.set_qiffile(qiffile)
 
     def set_qiffile(self, qiffile):
         """Set the name of the QIF file."""
@@ -487,8 +502,7 @@ class AppGUI(AppUI):
             tkMessageBox.showerror("Error", "QIF file not specified")
         else:
             self.convert()
-            self.frame.quit()
-
+            self.set_csvfile("")
 
 class AppCLI(AppUI):
     """Application command line user interface."""
